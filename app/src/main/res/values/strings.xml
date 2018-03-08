@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LoginBuster</string>
+    <string name="app_name">Login Buster</string>
     <string name="enter_pincode">ENTER PINCODE</string>
     <string name="first_failed_attempt">First Failed Attempt</string>
     <string name="second_failed_attempt">Second Failed Attempt</string>
