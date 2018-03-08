@@ -41,6 +41,12 @@ public class SuspectActivity extends AppCompatActivity {
         mCrimeTime.setText(crimeTimeAsString);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        MainActivity.sNavigatedBack = true;
+    }
+
     /**
      * Get Suspect intent
      * @param content

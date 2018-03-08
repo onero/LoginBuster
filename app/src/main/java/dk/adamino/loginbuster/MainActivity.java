@@ -5,6 +5,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -30,6 +32,7 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -50,10 +53,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private static final int MAX_FAILED_ATTEMPTS = 3;
     private static final List<Integer> PINCODE = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
 
+    public static boolean sNavigatedBack = false;
+
     private CameraManager mCameraManager;
     private CameraDevice mCameraDevice;
     private LinearLayout mPincodeLayout;
     private ImageView mFirstFailedAttempt, mSecondFailedAttempt;
+    private TextView mPincode, mBadPassword;
 
     private MediaService mMediaService;
     private SimpleDateFormat mCrimeTimeFormatter;
@@ -69,6 +75,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         mFirstFailedAttempt.setVisibility(View.INVISIBLE);
         mSecondFailedAttempt = findViewById(R.id.imgSecond_attempt_failed);
         mSecondFailedAttempt.setVisibility(View.INVISIBLE);
+        mPincode = findViewById(R.id.txtPincode);
+        mPincode.setTextSize(32);
+        mBadPassword = findViewById(R.id.txtBadPassword);
+        mBadPassword.setVisibility(View.INVISIBLE);
 
         mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         mMediaService = new MediaService();
@@ -78,6 +88,21 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         setupPincodeLayout();
         setupCamera();
+    }
+
+    public void restart() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sNavigatedBack) {
+            sNavigatedBack = false;
+            restart();
+        }
     }
 
     private void setupPincodeLayout() {
@@ -102,7 +127,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
      * @param number
      */
     private void registerUserInput(int number) {
+        clearPincode();
         mUserInput.add(number);
+        String asterisks = "";
+        for (int input : mUserInput) {
+            asterisks += "*";
+        }
+        mPincode.setText(asterisks);
         // Check if user has input max length
         if (mUserInput.size() == PIN_CODE_LENGTH) {
             // Account for login attempts
@@ -125,11 +156,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }
                 // Indicate failed attempt to user
             } else {
+                mBadPassword.setVisibility(View.VISIBLE);
                 addFailedAttemptToView();
             }
             // Reset user input
             mUserInput.clear();
+            clearPincode();
         }
+    }
+
+    private void clearPincode() {
+        mPincode.setText("");
     }
 
     /**
@@ -163,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         public Digit(Context context, int number) {
             super(context);
+            setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
             mNumber = number;
             setText(mNumber + "");
             setOnClickListener(this);

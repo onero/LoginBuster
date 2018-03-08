@@ -23,14 +23,14 @@
     <LinearLayout
         android:id="@+id/linearPincode"
         android:layout_width="0dp"
-        android:layout_height="434dp"
+        android:layout_height="321dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle">
+        app:layout_constraintTop_toBottomOf="@+id/txtPincode">
 
     </LinearLayout>
 
@@ -39,10 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearPincode"
-        tools:layout_editor_absoluteY="35dp">
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/imgFirst_attempt_failed"
@@ -58,5 +57,29 @@
             android:contentDescription="@string/second_failed_attempt"
             android:src="@drawable/second_attempt_failed"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtPincode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle"/>
+
+    <TextView
+        android:id="@+id/txtBadPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="164dp"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="8dp"
+        android:text="TRY AGAIN"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearPincode"/>
 
 </android.support.constraint.ConstraintLayout>
