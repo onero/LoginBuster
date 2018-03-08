@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             tools:context="dk.adamino.loginbuster.MainActivity">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        style="@style/Base.TextAppearance.AppCompat.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/enter_pincode"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/linearPincode"
+        android:layout_width="0dp"
+        android:layout_height="434dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearFailedAttempts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearPincode"
+        tools:layout_editor_absoluteY="35dp">
+
+        <ImageView
+            android:id="@+id/imgFirst_attempt_failed"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:contentDescription="@string/first_failed_attempt"
+            android:src="@drawable/first_failed_attempt"/>
+
+        <ImageView
+            android:id="@+id/imgSecond_attempt_failed"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:contentDescription="@string/second_failed_attempt"
+            android:src="@drawable/second_attempt_failed"/>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
