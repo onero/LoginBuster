@@ -51,16 +51,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_CODE = 1;
     private static final int PIN_CODE_LENGTH = 4;
     private static final int MAX_FAILED_ATTEMPTS = 3;
+    private static final int NUMBER_OF_ROWS = 3;
+    public static final int NUMBER_OF_BUTTONS = 3;
+    public static final int BACK_FACING_CAMERA_INDEX = 1;
     private static final List<Integer> PINCODE = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
-
     public static boolean sNavigatedBack = false;
+
+    private ImageView mFirstFailedAttempt, mSecondFailedAttempt;
+    private TextView mPincode, mBadPassword;
 
     private CameraManager mCameraManager;
     private CameraDevice mCameraDevice;
     private LinearLayout mPincodeLayout;
-    private ImageView mFirstFailedAttempt, mSecondFailedAttempt;
-    private TextView mPincode, mBadPassword;
-
     private MediaService mMediaService;
     private SimpleDateFormat mCrimeTimeFormatter;
     private List<Integer> mUserInput;
@@ -70,15 +72,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mPincodeLayout = findViewById(R.id.linearPincode);
-        mFirstFailedAttempt = findViewById(R.id.imgFirst_attempt_failed);
-        mFirstFailedAttempt.setVisibility(View.INVISIBLE);
-        mSecondFailedAttempt = findViewById(R.id.imgSecond_attempt_failed);
-        mSecondFailedAttempt.setVisibility(View.INVISIBLE);
-        mPincode = findViewById(R.id.txtPincode);
-        mPincode.setTextSize(32);
-        mBadPassword = findViewById(R.id.txtBadPassword);
-        mBadPassword.setVisibility(View.INVISIBLE);
+
+        setupPrimaryLayout();
 
         mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         mMediaService = new MediaService();
@@ -90,6 +85,21 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         setupCamera();
     }
 
+    private void setupPrimaryLayout() {
+        mPincodeLayout = findViewById(R.id.linearPincode);
+        mFirstFailedAttempt = findViewById(R.id.imgFirst_attempt_failed);
+        mFirstFailedAttempt.setVisibility(View.INVISIBLE);
+        mSecondFailedAttempt = findViewById(R.id.imgSecond_attempt_failed);
+        mSecondFailedAttempt.setVisibility(View.INVISIBLE);
+        mPincode = findViewById(R.id.txtPincode);
+        mPincode.setTextSize(32);
+        mBadPassword = findViewById(R.id.txtBadPassword);
+        mBadPassword.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Restarts activity for resetting the state
+     */
     public void restart() {
         Intent intent = getIntent();
         finish();
@@ -105,17 +115,20 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
+    /**
+     * Dynamic way of adding buttons to rows
+     */
     private void setupPincodeLayout() {
         mPincodeLayout.removeAllViews();
         int number = 1;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setGravity(Gravity.CENTER);
-            for (int j = 0; j < 3; j++) {
-                Digit digit = new Digit(this, number++);
-                digit.setTextSize(32);
-                row.addView(digit);
+            for (int j = 0; j < NUMBER_OF_BUTTONS; j++) {
+                PincodeButton pincodeButton = new PincodeButton(this, number++);
+                pincodeButton.setTextSize(32);
+                row.addView(pincodeButton);
             }
             mPincodeLayout.addView(row);
         }
@@ -193,12 +206,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         return true;
     }
 
-
-    private class Digit extends android.support.v7.widget.AppCompatButton implements View.OnClickListener {
+    private class PincodeButton extends android.support.v7.widget.AppCompatButton implements View.OnClickListener {
 
         private int mNumber;
 
-        public Digit(Context context, int number) {
+        public PincodeButton(Context context, int number) {
             super(context);
             setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
             mNumber = number;
@@ -283,9 +295,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
      */
     private void setupCamera() {
         try {
-            String cameraId = mCameraManager.getCameraIdList()[1];
+            String cameraId = mCameraManager.getCameraIdList()[BACK_FACING_CAMERA_INDEX];
+            // Ensure access to camera!
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 // For API 23 and up
+                // TODO ALH: Improve with handling for lower APIs
                 checkPermissions();
             }
             mCameraManager.openCamera(cameraId, stateCallback, null);
